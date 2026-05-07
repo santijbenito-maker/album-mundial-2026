@@ -1180,7 +1180,7 @@ function applyFiltersAndSearch() {
     const g = div.dataset.group;
     if (!g) return;
     const anyTeamVisible = [...document.querySelectorAll(`details.block[data-kind="team"]`)]
-      .some(d => d.style.display !== "none" && (d.dataset.searchText || "").includes(`grupo ${g.toLowerCase()}`));
+      .some(d => d.style.display !== "none" && (d.dataset.searchText || "").toLowerCase().includes(`grupo ${g.toLowerCase()}`));
     div.style.display = anyTeamVisible ? "" : "none";
   });
 }
