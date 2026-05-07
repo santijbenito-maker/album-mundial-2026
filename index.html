@@ -609,7 +609,7 @@
     <h2>¿Quién sos?</h2>
     <p>Esto se usa para mostrar quién marcó cada figurita.</p>
     <div class="user-buttons">
-      <button class="user-btn yo" data-user="Yo"><span class="initial">Y</span> Yo</button>
+      <button class="user-btn yo" data-user="Santiago"><span class="initial">S</span> Santiago</button>
       <button class="user-btn facu" data-user="Facundo"><span class="initial">F</span> Facundo</button>
       <button class="user-btn ange" data-user="Ángela"><span class="initial">A</span> Ángela</button>
     </div>
@@ -750,14 +750,18 @@ const TEAM_STICKERS = 20;
 const TOTAL = FWC_COUNT + TEAMS.length * TEAM_STICKERS + CC_COUNT; // 994
 
 const USERS = {
-  "Yo":      { initial: "Y", color: "var(--user-yo)" },
-  "Facundo": { initial: "F", color: "var(--user-facu)" },
-  "Ángela":  { initial: "A", color: "var(--user-ange)" },
+  "Santiago": { initial: "S", color: "var(--user-yo)" },
+  "Facundo":  { initial: "F", color: "var(--user-facu)" },
+  "Ángela":   { initial: "A", color: "var(--user-ange)" },
 };
 
 // ============================================================
 // ESTADO LOCAL
 // ============================================================
+if (localStorage.getItem("album_user") === "Yo") {
+  localStorage.setItem("album_user", "Santiago");
+}
+
 const state = {
   user: localStorage.getItem("album_user") || null,
   stickers: new Map(), // id -> { count, last_updated_by }
@@ -1229,7 +1233,7 @@ function applyFiltersAndSearch() {
 // ============================================================
 function renderStats() {
   let owned = 0, dups = 0;
-  const userCounts = { "Yo": 0, "Facundo": 0, "Ángela": 0 };
+  const userCounts = { "Santiago": 0, "Facundo": 0, "Ángela": 0 };
   for (const [, s] of state.stickers) {
     if (s.count >= 1) {
       owned++;
@@ -1252,7 +1256,7 @@ function renderStats() {
 
   // Línea de usuarios
   document.getElementById("usersLine").innerHTML = `
-    <span class="uchip"><span class="udot" style="background:var(--user-yo)"></span>Yo: <b>${userCounts["Yo"]}</b></span>
+    <span class="uchip"><span class="udot" style="background:var(--user-yo)"></span>Santiago: <b>${userCounts["Santiago"]}</b></span>
     <span class="uchip"><span class="udot" style="background:var(--user-facu)"></span>Facundo: <b>${userCounts["Facundo"]}</b></span>
     <span class="uchip"><span class="udot" style="background:var(--user-ange)"></span>Ángela: <b>${userCounts["Ángela"]}</b></span>
   `;
