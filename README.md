@@ -18,7 +18,7 @@ como PWA y sincroniza en tiempo real vía Supabase.
 2. Hacé click en **"New project"**.
    - **Name**: `album-mundial-2026` (o lo que quieras).
    - **Database password**: elegí una y guardala (no la vas a usar para esta app, pero te la pide).
-   - **Region**: la más cercana (South America — São Paulo si estás en Argentina).
+   - **Region**: dejá la que te **recomiende Supabase** (un cartelito te dice cuál es la más cercana según tu IP, normalmente algo en *Americas*). Si no aparece recomendación, elegí *South America (São Paulo)* desde Argentina o *East US* / *West US* desde el resto de América.
    - **Pricing plan**: **Free**.
 3. Esperá ~1 minuto a que el proyecto esté listo.
 
