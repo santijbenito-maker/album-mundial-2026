@@ -263,6 +263,15 @@
     box-shadow: var(--shadow);
   }
   details.block[open] { padding-bottom: 12px; }
+  details.block[data-kind="cc"] {
+    border-color: var(--cc);
+    background: linear-gradient(135deg, var(--cc), var(--cc-strong));
+    color: white;
+  }
+  details.block[data-kind="cc"] .block-name,
+  details.block[data-kind="cc"] .block-sub {
+    color: white;
+  }
   details.block > summary {
     list-style: none;
     cursor: pointer;
