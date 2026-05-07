@@ -43,7 +43,7 @@
     --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
       --bg: #0b1220;
       --bg-elev: #111a2e;
       --bg-elev-2: #18233d;
@@ -58,6 +58,21 @@
       --shield-text: #1f2937;
       --shadow: 0 1px 2px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.25);
     }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0b1220;
+    --bg-elev: #111a2e;
+    --bg-elev-2: #18233d;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --border: #1f2a44;
+    --border-strong: #2c3a5c;
+    --missing: #1f2a44;
+    --missing-text: #94a3b8;
+    --owned: #3b82f6;
+    --shield: #f59e0b;
+    --shield-text: #1f2937;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 2px 8px rgba(0,0,0,.25);
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -113,6 +128,19 @@
   }
   .conn-badge.online .conn-dot { background: var(--ok); }
   .conn-badge.offline .conn-dot { background: var(--danger); }
+  .theme-toggle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--bg-elev-2);
+    color: var(--text);
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .theme-toggle:active { background: var(--border); }
 
   .progress-row {
     display: flex;
@@ -171,8 +199,9 @@
     border-bottom: 1px solid #fcd34d;
   }
   @media (prefers-color-scheme: dark) {
-    .offline-banner { background: #422006; color: #fde68a; border-bottom-color: #78350f; }
+    :root:not([data-theme="light"]) .offline-banner { background: #422006; color: #fde68a; border-bottom-color: #78350f; }
   }
+  :root[data-theme="dark"] .offline-banner { background: #422006; color: #fde68a; border-bottom-color: #78350f; }
 
   /* ===== Search & Filters ===== */
   .toolbar {
@@ -591,6 +620,7 @@
 <header class="header">
   <div class="title-row">
     <h1>⚽ Álbum Mundial 2026</h1>
+    <button id="themeToggle" class="theme-toggle" aria-label="Cambiar tema">🌙</button>
     <span id="connBadge" class="conn-badge"><span class="conn-dot"></span><span id="connText">…</span></span>
   </div>
   <div class="progress-row">
@@ -1385,6 +1415,33 @@ document.getElementById("btnReset").addEventListener("click", async () => {
 // ============================================================
 // INIT
 // ============================================================
+function applyTheme(theme) {
+  if (theme === "light" || theme === "dark") {
+    document.documentElement.dataset.theme = theme;
+  } else {
+    delete document.documentElement.dataset.theme;
+  }
+  const btn = document.getElementById("themeToggle");
+  if (btn) {
+    const isDark = theme === "dark" ||
+      (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    btn.textContent = isDark ? "☀️" : "🌙";
+    btn.title = isDark ? "Modo claro" : "Modo oscuro";
+  }
+}
+
+function toggleTheme() {
+  const current = localStorage.getItem("album_theme");
+  const sysDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const isDarkNow = current === "dark" || (!current && sysDark);
+  const next = isDarkNow ? "light" : "dark";
+  localStorage.setItem("album_theme", next);
+  applyTheme(next);
+}
+
+applyTheme(localStorage.getItem("album_theme"));
+document.getElementById("themeToggle").addEventListener("click", toggleTheme);
+
 async function init() {
   setConn("connecting");
   if (!state.user) showUserModal();
