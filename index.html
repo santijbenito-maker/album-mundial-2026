@@ -1272,6 +1272,14 @@ function renderApp() {
 // ============================================================
 // EXPORTAR LISTA DE CAMBIO
 // ============================================================
+function countryFlagEmoji(code) {
+  if (code === "gb-sct") return "🏴󠁧󠁢󠁳󠁣󠁴󠁿";
+  if (!code || code.length !== 2) return "🏳️";
+  const base = 0x1F1E6;
+  const up = code.toUpperCase();
+  return String.fromCodePoint(base + up.charCodeAt(0) - 65, base + up.charCodeAt(1) - 65);
+}
+
 function buildExportText() {
   const lines = [];
   lines.push("Estas son las que me *faltan* y las *repetidas* que tengo para cambiar 👇");
@@ -1309,9 +1317,10 @@ function buildExportText() {
       else if (s.count >= 2) repes.push(`${i+1} ×${s.count - 1}`);
     }
     if (missing.length || repes.length) {
-      lines.push(`*${t.name}*`);
+      lines.push(`${countryFlagEmoji(t.code)} *${t.name}*`);
       if (missing.length) lines.push("  Faltan: " + missing.join(", "));
       if (repes.length)   lines.push("  Repes: " + repes.join(", "));
+      lines.push("");
     }
   });
   lines.push("");
