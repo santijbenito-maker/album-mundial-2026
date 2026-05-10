@@ -1341,8 +1341,6 @@ function buildExportText() {
   const pct = ((owned / TOTAL) * 100).toFixed(1);
   lines.push("");
   lines.push(`📊 *Resumen*: ${owned}/${TOTAL} (${pct}%) · faltan ${missingTotal} · ${dups} repes`);
-  lines.push("");
-  lines.push("¿Tenés alguna? ¡Avisame y arreglamos! 🤝");
 
   return lines.join("\n");
 }
