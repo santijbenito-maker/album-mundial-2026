@@ -554,6 +554,7 @@
   }
   .footer-btn .ico { font-size: 18px; }
   .footer-btn.danger { color: var(--danger); }
+  .footer-btn.wa { color: #25d366; }
   .footer-btn:active { background: var(--border); }
 
   /* ===== Toast ===== */
@@ -655,7 +656,7 @@
 </main>
 
 <div class="footer">
-  <button class="footer-btn" id="btnExport"><span class="ico">📋</span><span>Exportar</span></button>
+  <button class="footer-btn wa" id="btnExport"><span class="ico">💬</span><span>WhatsApp</span></button>
   <button class="footer-btn" id="btnSwitchUser"><span class="ico">👤</span><span>Cambiar usuario</span></button>
   <button class="footer-btn danger" id="btnReset"><span class="ico">🗑️</span><span>Reiniciar</span></button>
 </div>
@@ -1273,7 +1274,10 @@ function renderApp() {
 // ============================================================
 function buildExportText() {
   const lines = [];
-  lines.push("📒 Álbum Mundial 2026 — lista de cambio");
+  const me = state.user || "Yo";
+  lines.push(`¡Hola! Soy *${me}* y estoy llenando el *Álbum Panini Mundial 2026* 🇦🇷⚽`);
+  lines.push("");
+  lines.push("Estas son las que me *faltan* y las *repetidas* que tengo para cambiar 👇");
   lines.push("");
 
   // FWC
@@ -1286,9 +1290,9 @@ function buildExportText() {
     else if (s.count >= 2) fwcRepes.push(`${num} ×${s.count - 1}`);
   }
   if (fwcMissing.length || fwcRepes.length) {
-    lines.push("🏆 FWC");
+    lines.push("🏆 *FWC — Mundial*");
     if (fwcMissing.length) lines.push("  Faltan: " + fwcMissing.join(", "));
-    if (fwcRepes.length)   lines.push("  Repes : " + fwcRepes.join(", "));
+    if (fwcRepes.length)   lines.push("  Repes: " + fwcRepes.join(", "));
     lines.push("");
   }
 
@@ -1296,7 +1300,7 @@ function buildExportText() {
   let lastGroup = null;
   TEAMS.forEach((t, idx) => {
     if (t.group !== lastGroup) {
-      lines.push(`— Grupo ${t.group} —`);
+      lines.push(`*— Grupo ${t.group} —*`);
       lastGroup = t.group;
     }
     const missing = [], repes = [];
@@ -1308,9 +1312,9 @@ function buildExportText() {
       else if (s.count >= 2) repes.push(`${i+1} ×${s.count - 1}`);
     }
     if (missing.length || repes.length) {
-      lines.push(`${t.name}`);
+      lines.push(`*${t.name}*`);
       if (missing.length) lines.push("  Faltan: " + missing.join(", "));
-      if (repes.length)   lines.push("  Repes : " + repes.join(", "));
+      if (repes.length)   lines.push("  Repes: " + repes.join(", "));
     }
   });
   lines.push("");
@@ -1325,19 +1329,23 @@ function buildExportText() {
     else if (s.count >= 2) ccRepes.push(`${num} ×${s.count - 1}`);
   }
   if (ccMissing.length || ccRepes.length) {
-    lines.push("🥤 CC");
+    lines.push("🥤 *CC — Coca-Cola*");
     if (ccMissing.length) lines.push("  Faltan: " + ccMissing.join(", "));
-    if (ccRepes.length)   lines.push("  Repes : " + ccRepes.join(", "));
+    if (ccRepes.length)   lines.push("  Repes: " + ccRepes.join(", "));
   }
 
   // Resumen
-  let owned = 0, dups = 0;
+  let owned = 0, dups = 0, missingTotal = 0;
   for (const [, s] of state.stickers) {
     if (s.count >= 1) owned++;
     if (s.count >= 2) dups += s.count - 1;
   }
+  missingTotal = TOTAL - owned;
+  const pct = ((owned / TOTAL) * 100).toFixed(1);
   lines.push("");
-  lines.push(`Resumen: ${owned}/${TOTAL} tenidas · ${TOTAL - owned} faltantes · ${dups} repes`);
+  lines.push(`📊 *Resumen*: ${owned}/${TOTAL} (${pct}%) · faltan ${missingTotal} · ${dups} repes`);
+  lines.push("");
+  lines.push("¿Tenés alguna? ¡Avisame y arreglamos! 🤝");
 
   return lines.join("\n");
 }
@@ -1392,8 +1400,13 @@ document.querySelectorAll(".filter-pill").forEach(p => {
 
 document.getElementById("btnExport").addEventListener("click", async () => {
   const txt = buildExportText();
-  const ok = await copyToClipboard(txt);
-  showToast(ok ? "✓ Lista copiada al portapapeles" : "No se pudo copiar");
+  // En mobile/desktop con WhatsApp instalado abre la app pidiendo a quién mandárselo.
+  const url = `https://wa.me/?text=${encodeURIComponent(txt)}`;
+  // Copiamos también al portapapeles como respaldo por si el navegador
+  // bloquea la apertura o el usuario quiere pegarlo en otra parte.
+  await copyToClipboard(txt);
+  window.open(url, "_blank");
+  showToast("✓ Mensaje listo — elegí a quién enviárselo");
 });
 
 document.getElementById("btnSwitchUser").addEventListener("click", () => {
